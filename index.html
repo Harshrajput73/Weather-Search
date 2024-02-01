@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input class="search-field" type="text" placeholder="enter city name" spellcheck="false" autocomplete="off">
+            <button class="btn"><img src="./images/search.png"></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name</p>
+
+        </div>
+        <div class="weather">
+            <img src="./images/sun.png"class="weather-icon">
+            <h1 class="temp"><span class="temp-value">22</span> <span>°C</span></h1>
+            <h2 class="city-value"> New york</h2>
+            <div class="down-wrapper">
+            <div class="details">
+                <div class="col">
+                    <img src="./images/humidity.png" >
+                    <div> <p class="humadity"><span class="humidity-value">50</span></p>
+                    <p>Humadity</p></div>
+                   
+                </div>
+            </div>
+            <div class="col">
+                <img src="./images/wind.svg" >
+                <div>
+                <p class="wind"><span class="wind-value">15</span> </p>
+                <p>wind speed</p></div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </div>
+
+ 
+    <script>
+        const apikey="fe9d7cb93fd7f44c4633c272bede7ac0";
+        const apiUrl="https://api.openweathermap.org/data/2.5/weather?units=metric&q= ";
+
+        const searchBox = document.querySelector(".search input");
+        const searchBtn = document.querySelector(".search button");
+        const weatherIcon =document.querySelector(".weather-icon");
+        const weather=document.querySelector(".weather");
+
+
+        async function checkweather(city){
+            const respons = await fetch(apiUrl + city +  `&appid=${apikey}`);
+            if(respons.status ==404){
+                document.querySelector(".error").style.display ="block";
+                document.querySelector(".weather").style.display="none";
+            }else{
+
+
+            var data=await respons.json();
+            
+
+            
+            document.querySelector(".city-value").innerHTML = data.name;
+            document.querySelector(".temp-value").innerHTML =Math.round (data.main.temp) +"";
+            document.querySelector(".humidity-value").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind-value").innerHTML = data.wind.speed +"km/h";
+
+            if(data.weather[0].main == "Clouds"){
+                weatherIcon.src ="images/clouds.png";
+            }
+            else if(data.weather[0].main == "Clear"){
+                weatherIcon.src="images/clear.png";
+            }
+            else if(data.weather[0].main =="Rain"){
+                weatherIcon.src="images/rain.png";
+            }
+            else if(data.weather[0].main =="Drizzle"){
+                weatherIcon.src="images/Drizzle.png";
+            }
+            else if(data.weather[0].main == "Mist"){
+                weatherIcon.src="images/mist.png";
+            }
+            weather.style.display ="block";
+            document.querySelector(".error").style.display ="none";
+           
+        }
+
+        }
+         searchBtn.addEventListener("click",()=>{
+            checkweather(searchBox.value);
+         })
+
+         document.addEventListener('keypress', (event)=>{
+
+// event.keyCode or event.which  property will have the code of the pressed key
+let keyCode = event.keyCode ? event.keyCode : event.which;
+
+// 13 points the enter key
+if(keyCode === 13) {
+  // call click function of the buttonn 
+  checkweather(searchBox.value);
+}
+  
+});
+         
+        
+       let input=document.querySelector('input');
+       input.addEventListener('keyup',(e)=> {
+        if(e.keyCode ===13 ){
+            console.log(e.target.value);
+        }
+       })
+
+
+    </script>
+</body>
+</html>
